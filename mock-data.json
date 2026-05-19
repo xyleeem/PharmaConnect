@@ -1,0 +1,51 @@
+{
+  "db": {
+    "utilisateur": [
+      { "id": 1, "nom": "Ahmed Ben Salah", "email": "ahmed@pharmaconnect.tn", "mot_de_passe": "hashed_pwd", "role": "PATIENT", "created_at": "2026-01-12 09:30:00" },
+      { "id": 2, "nom": "Sana Trabelsi", "email": "sana@pharmaconnect.tn", "mot_de_passe": "hashed_pwd", "role": "PATIENT", "created_at": "2026-02-03 11:15:00" },
+      { "id": 3, "nom": "Dr. Youssef Gharbi", "email": "youssef@pharmaciecentrale.tn", "mot_de_passe": "hashed_pwd", "role": "PHARMACIEN", "created_at": "2026-01-05 08:00:00" },
+      { "id": 4, "nom": "Admin PharmaConnect", "email": "admin@pharmaconnect.tn", "mot_de_passe": "hashed_pwd", "role": "ADMIN", "created_at": "2026-01-01 00:00:00" }
+    ],
+    "patient": [
+      { "id": 1, "date_naissance": "1993-06-19", "adresse": "Ariana, Tunisie", "telephone": "+216 22 123 456" },
+      { "id": 2, "date_naissance": "1988-11-02", "adresse": "Sfax, Tunisie", "telephone": "+216 55 987 654" }
+    ],
+    "pharmacie": [
+      { "id": 1, "nom": "Pharmacie CityCare", "adresse": "Centre Urbain Nord, Tunis", "horaires": "08:00 - 22:00", "telephone": "+216 71 111 222" }
+    ],
+    "pharmacien": [{ "id": 3, "diplome": "Docteur en Pharmacie", "pharmacie_id": 1 }],
+    "administrateur": [{ "id": 4, "niveau_acces": 10 }],
+    "medicament": [
+      { "id": 1, "nom": "Paracetamol 500mg", "categorie": "Antalgique", "prix_unitaire": 5.8 },
+      { "id": 2, "nom": "Amoxicilline 1g", "categorie": "Antibiotique", "prix_unitaire": 19.5 },
+      { "id": 3, "nom": "Sirop Toux 150ml", "categorie": "ORL", "prix_unitaire": 13.2 },
+      { "id": 4, "nom": "Vitamine C 1000mg", "categorie": "Complement", "prix_unitaire": 16.9 }
+    ],
+    "stock": [
+      { "id": 1, "medicament_id": 1, "pharmacie_id": 1, "quantite_disponible": 52, "date_expiration": "2027-03-01" },
+      { "id": 2, "medicament_id": 2, "pharmacie_id": 1, "quantite_disponible": 12, "date_expiration": "2026-12-20" },
+      { "id": 3, "medicament_id": 3, "pharmacie_id": 1, "quantite_disponible": 8, "date_expiration": "2027-01-11" },
+      { "id": 4, "medicament_id": 4, "pharmacie_id": 1, "quantite_disponible": 20, "date_expiration": "2027-04-15" }
+    ],
+    "ordonnance": [
+      { "id": 1, "patient_id": 1, "date_emission": "2026-05-02", "date_expiration": "2026-06-02", "statut": "EN_ATTENTE", "signature_numerique": "sig_a1" },
+      { "id": 2, "patient_id": 2, "date_emission": "2026-05-01", "date_expiration": "2026-06-01", "statut": "VALIDEE", "signature_numerique": "sig_b2" },
+      { "id": 3, "patient_id": 1, "date_emission": "2026-04-22", "date_expiration": "2026-05-22", "statut": "REFUSEE", "signature_numerique": "sig_c3" }
+    ],
+    "ligne_prescription": [
+      { "id": 1, "ordonnance_id": 1, "medicament_id": 1, "posologie": "1 cp x 3/jour", "duree": 5, "quantite": 2 },
+      { "id": 2, "ordonnance_id": 2, "medicament_id": 2, "posologie": "1 cp x 2/jour", "duree": 7, "quantite": 1 },
+      { "id": 3, "ordonnance_id": 3, "medicament_id": 3, "posologie": "10 ml x 3/jour", "duree": 4, "quantite": 1 }
+    ],
+    "notification": [
+      { "id": 1, "utilisateur_id": 1, "message": "Votre commande est prete a la Pharmacie CityCare.", "type": "ORDONNANCE", "date_envoi": "2026-05-05 15:10:00", "is_read": false }
+    ]
+  },
+  "ownerOrders": [
+    { "id": "PC-TN-2105", "date": "2026-05-05", "status": "Preparation", "total": 38.4 },
+    { "id": "PC-TN-2104", "date": "2026-05-05", "status": "Pret", "total": 19.5 },
+    { "id": "PC-TN-2103", "date": "2026-05-05", "status": "Livre", "total": 26.4 },
+    { "id": "PC-TN-2102", "date": "2026-05-04", "status": "Livre", "total": 16.9 },
+    { "id": "PC-TN-2101", "date": "2026-05-04", "status": "Annule", "total": 0 }
+  ]
+}

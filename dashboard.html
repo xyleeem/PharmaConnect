@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard — PharmaConnect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="dashboard-wrapper">
+    <div id="globalLoading" class="global-loading d-none" aria-live="polite">
+      <div class="spinner-border text-pharma" role="status"></div>
+      <span class="ms-2">Chargement...</span>
+    </div>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <div class="sidebar-brand">
+        <h1><i class="fa-solid fa-capsules me-2"></i>PharmaConnect</h1>
+        <small id="sidebarRoleHint">Plateforme pharmacie</small>
+      </div>
+      <nav class="nav flex-column">
+        <a class="nav-link active" href="#" data-panel="dashboard">
+          <i class="fa-solid fa-gauge-high"></i>
+          Dashboard
+        </a>
+        <a class="nav-link" href="#" data-panel="medicines">
+          <i class="fa-solid fa-pills"></i>
+          Medicines
+        </a>
+        <a class="nav-link" href="#" data-panel="prescriptions">
+          <i class="fa-solid fa-file-prescription"></i>
+          Prescriptions
+        </a>
+        <a class="nav-link" href="#" data-panel="orders">
+          <i class="fa-solid fa-box"></i>
+          Orders
+        </a>
+      </nav>
+      <div class="mt-auto px-3 pt-4 small opacity-75 d-none d-lg-block">
+        <a href="index.html" class="text-white text-decoration-none">
+          <i class="fa-solid fa-house me-1"></i> Back to home
+        </a>
+      </div>
+    </aside>
+
+    <div class="main-content">
+      <header class="topbar">
+        <div class="d-flex align-items-center gap-3">
+          <button
+            type="button"
+            class="btn btn-light border sidebar-toggle"
+            id="sidebarToggle"
+            aria-label="Open menu"
+          >
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div>
+            <div class="text-muted small" id="breadcrumbText">Overview</div>
+            <h2 class="h5 mb-0 fw-bold" id="pageTitle">Dashboard</h2>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <div class="role-switch-group" role="group" aria-label="Switch role view">
+            <button type="button" class="btn btn-role-active" id="btnRoleClient" data-role="client">
+              <span aria-hidden="true">👤</span> Vue Patient
+            </button>
+            <button type="button" class="btn btn-role-inactive" id="btnRoleOwner" data-role="owner">
+              <span aria-hidden="true">🏪</span> Vue Pharmacien
+            </button>
+          </div>
+          <button type="button" class="btn btn-outline-danger btn-sm" id="btnLogout">
+            <i class="fa-solid fa-right-from-bracket me-1"></i>Logout
+          </button>
+        </div>
+      </header>
+
+      <main class="page-body">
+        <!-- Dashboard panel -->
+        <section id="panel-dashboard" class="panel-section">
+          <!-- Client view -->
+          <div id="view-client-dashboard" class="role-dashboard">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3 mb-4">
+              <div>
+                <h3 class="h4 fw-bold mb-1" id="clientWelcome">Welcome back, Ahmed</h3>
+                <p class="text-muted mb-0">Here is a quick look at your prescriptions and orders.</p>
+              </div>
+              <button type="button" class="btn btn-pharma" data-bs-toggle="modal" data-bs-target="#modalRequestRx">
+                <i class="fa-solid fa-plus me-2"></i>Request new prescription
+              </button>
+            </div>
+
+            <div class="notification-banner mb-4 d-flex align-items-start gap-3">
+              <i class="fa-solid fa-bell text-pharma fs-4 mt-1"></i>
+              <div>
+                <div class="fw-semibold">Your medicine is ready</div>
+                <p class="mb-0 text-muted small">
+                  Paracetamol 500mg is packed and waiting at CityCare Pharmacy. Show this app when you pick it
+                  up.
+                </p>
+              </div>
+            </div>
+
+            <div class="row g-4">
+              <div class="col-lg-6">
+                <div class="card card-dashboard h-100">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="fa-solid fa-file-prescription text-pharma me-2"></i>Recent prescriptions</span>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="table-responsive">
+                      <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                          <tr>
+                            <th>Medicine</th>
+                            <th>Status</th>
+                            <th class="text-end">Date</th>
+                          </tr>
+                        </thead>
+                        <tbody id="clientRecentRxBody"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="card card-dashboard h-100">
+                  <div class="card-header">
+                    <i class="fa-solid fa-clock-rotate-left text-pharma me-2"></i>Order history
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="table-responsive">
+                      <table class="table table-hover mb-0 align-middle">
+                        <thead class="table-light">
+                          <tr>
+                            <th>Order</th>
+                            <th>Items</th>
+                            <th class="text-end">Total</th>
+                          </tr>
+                        </thead>
+                        <tbody id="clientOrderHistoryBody"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Owner view -->
+          <div id="view-owner-dashboard" class="role-dashboard d-none">
+            <p class="text-muted mb-4">Operational snapshot for your pharmacy today.</p>
+            <div class="row g-3 mb-4">
+              <div class="col-6 col-xl-3">
+                <div class="stat-card">
+                  <div class="stat-label">Total medicines</div>
+                  <div class="stat-value" id="statTotalMedicines">124</div>
+                  <small class="text-muted">SKUs in catalog</small>
+                </div>
+              </div>
+              <div class="col-6 col-xl-3">
+                <div class="stat-card">
+                  <div class="stat-label">Low stock alerts</div>
+                  <div class="stat-value text-warning" id="statLowStock">3</div>
+                  <small class="text-muted">Below reorder point</small>
+                </div>
+              </div>
+              <div class="col-6 col-xl-3">
+                <div class="stat-card">
+                  <div class="stat-label">Pending prescriptions</div>
+                  <div class="stat-value" id="statPendingRx">8</div>
+                  <small class="text-muted">Awaiting action</small>
+                </div>
+              </div>
+              <div class="col-6 col-xl-3">
+                <div class="stat-card">
+                  <div class="stat-label">Today's orders</div>
+                  <div class="stat-value" id="statTodayOrders">5</div>
+                  <small class="text-muted">Since midnight</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="card card-dashboard mb-3">
+              <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <span><i class="fa-solid fa-list text-pharma me-2"></i>Recent prescriptions</span>
+                <div class="d-flex flex-wrap gap-2">
+                  <button type="button" class="btn btn-sm btn-outline-pharma" data-bs-toggle="modal" data-bs-target="#modalAddMedicine">
+                    <i class="fa-solid fa-plus me-1"></i>Add medicine
+                  </button>
+                  <button type="button" class="btn btn-sm btn-pharma" data-bs-toggle="modal" data-bs-target="#modalApproveRx">
+                    <i class="fa-solid fa-check me-1"></i>Approve prescription
+                  </button>
+                </div>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Patient</th>
+                        <th>Medicine</th>
+                        <th>Status</th>
+                        <th class="text-end">Prescriber</th>
+                      </tr>
+                    </thead>
+                    <tbody id="ownerRecentRxBody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Medicines panel -->
+        <section id="panel-medicines" class="panel-section d-none">
+          <div class="card card-dashboard">
+            <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+              <span id="medicinesPanelTitle"><i class="fa-solid fa-pills text-pharma me-2"></i>Medicines</span>
+              <button type="button" class="btn btn-sm btn-pharma owner-only d-none" data-bs-toggle="modal" data-bs-target="#modalAddMedicine">
+                <i class="fa-solid fa-plus me-1"></i>Add medicine
+              </button>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Name</th>
+                      <th class="text-end">Stock</th>
+                            <th class="text-end">Prix (TND)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="medicinesTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Prescriptions panel -->
+        <section id="panel-prescriptions" class="panel-section d-none">
+          <div class="card card-dashboard">
+            <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+              <span id="rxPanelTitle"><i class="fa-solid fa-file-prescription text-pharma me-2"></i>Prescriptions</span>
+              <button type="button" class="btn btn-sm btn-pharma owner-only d-none" data-bs-toggle="modal" data-bs-target="#modalApproveRx">
+                <i class="fa-solid fa-check me-1"></i>Approve prescription
+              </button>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Patient</th>
+                      <th>Medicine</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="prescriptionsTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Orders panel -->
+        <section id="panel-orders" class="panel-section d-none">
+          <div class="card card-dashboard">
+            <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+              <span id="ordersPanelTitle"><i class="fa-solid fa-box text-pharma me-2"></i>Orders</span>
+              <button type="button" class="btn btn-sm btn-pharma owner-only d-none" data-bs-toggle="modal" data-bs-target="#modalUpdateOrderStatus">
+                <i class="fa-solid fa-pen-to-square me-1"></i>Modifier statut commande
+              </button>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th class="text-end">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ordersTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Modal: Request prescription (client) -->
+    <div class="modal fade" id="modalRequestRx" tabindex="-1" aria-labelledby="modalRequestRxLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold" id="modalRequestRxLabel">Request new prescription</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-muted small">This is a static demo — no data is sent.</p>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Medicaments demandes</label>
+              <select class="form-select rounded-3" id="selectRequestMedicines" multiple></select>
+              <div class="form-text">Selection multiple possible (Ctrl/Cmd + clic).</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Photo de l'ordonnance</label>
+              <input type="file" class="form-control rounded-3" id="inputOrdonnancePhoto" accept="image/*" />
+            </div>
+            <div class="mb-0">
+              <label class="form-label fw-semibold">Notes</label>
+              <textarea class="form-control rounded-3" id="inputRequestNotes" rows="2" placeholder="Posologie, remarques..."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-pharma" id="btnSubmitRequestRx">Submit request</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Add medicine (owner) -->
+    <div class="modal fade" id="modalAddMedicine" tabindex="-1" aria-labelledby="modalAddMedicineLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold" id="modalAddMedicineLabel">Add medicine</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-muted small">UI only — catalog is not persisted.</p>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Name</label>
+              <input type="text" class="form-control rounded-3" id="inputNewMedName" placeholder="e.g. Ibuprofen" />
+            </div>
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label fw-semibold">Stock</label>
+                <input type="number" class="form-control rounded-3" id="inputNewMedStock" min="0" value="20" />
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-semibold">Prix (TND)</label>
+                <input type="number" class="form-control rounded-3" id="inputNewMedPrice" min="0" step="0.01" value="18.5" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-pharma" id="btnSaveMedicine" data-bs-dismiss="modal">Save to list</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Approve prescription (owner) -->
+    <div class="modal fade" id="modalApproveRx" tabindex="-1" aria-labelledby="modalApproveRxLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold" id="modalApproveRxLabel">Approve prescription</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-muted small">Select a pending line to approve (demo).</p>
+            <label class="form-label fw-semibold">Prescription</label>
+            <select class="form-select rounded-3" id="selectPendingRx"></select>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-pharma" id="btnConfirmApprove" data-bs-dismiss="modal">Approve</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Update order status (owner) -->
+    <div class="modal fade" id="modalUpdateOrderStatus" tabindex="-1" aria-labelledby="modalUpdateOrderStatusLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4">
+          <div class="modal-header">
+            <h5 class="modal-title fw-bold" id="modalUpdateOrderStatusLabel">Modifier statut commande</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Commande</label>
+              <select class="form-select rounded-3" id="selectOrderToUpdate"></select>
+            </div>
+            <div class="mb-0">
+              <label class="form-label fw-semibold">Nouveau statut</label>
+              <select class="form-select rounded-3" id="selectOrderStatusValue">
+                <option value="Preparation">Preparation</option>
+                <option value="Pret">Pret</option>
+                <option value="Livre">Livre</option>
+                <option value="Annule">Annule</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer border-0 pt-0">
+            <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Annuler</button>
+            <button type="button" class="btn btn-pharma" id="btnSaveOrderStatus" data-bs-dismiss="modal">Enregistrer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div id="appToast" class="toast toast-pharma" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body fw-semibold" id="appToastBody"></div>
+          <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
