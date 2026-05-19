@@ -45,6 +45,12 @@ public final class AuthContext {
         }
     }
 
+    public static void requireAdmin(Role role) {
+        if (role != Role.ADMIN) {
+            throw new ApiException("Acces reserve a l'administrateur", HttpStatus.FORBIDDEN);
+        }
+    }
+
     public static void requireOwnPatient(Integer loggedUserId, Integer patientId) {
         if (!loggedUserId.equals(patientId)) {
             throw new ApiException("Acces refuse: vous ne pouvez consulter que vos propres donnees", HttpStatus.FORBIDDEN);

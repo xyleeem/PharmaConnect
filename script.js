@@ -9,6 +9,7 @@ let cachedOrdonnances = [];
 let cachedMedicaments = [];
 let cachedCommandes = [];
 let cachedNotifications = [];
+let cachedUsers = [];
 let dashboardStats = null;
 
 function $(sel) {
@@ -57,6 +58,10 @@ function isStaff() {
   return currentUser && (currentUser.role === "PHARMACIEN" || currentUser.role === "ADMIN");
 }
 
+function isAdmin() {
+  return currentUser && currentUser.role === "ADMIN";
+}
+
 function isPatient() {
   return currentUser && currentUser.role === "PATIENT";
 }
@@ -70,28 +75,39 @@ function requireAuth() {
   return true;
 }
 
-function applyRoleVisibility() {
-  const btnClient = $("#btnRoleClient");
-  const btnOwner = $("#btnRoleOwner");
-  if (isPatient()) {
-    currentRole = "client";
-    btnOwner?.classList.add("d-none");
-    btnClient?.classList.remove("d-none");
-  } else if (isStaff()) {
-    btnClient?.classList.remove("d-none");
-    btnOwner?.classList.remove("d-none");
-    if (!currentRole || currentRole === "client") {
-      currentRole = "owner";
-    }
+function getDashboardRole() {
+  return isStaff() ? "owner" : "client";
+}
+
+function renderTopbarUserInfo() {
+  const nameEl = $("#topbarUserName");
+  const roleTextEl = $("#topbarUserRoleText");
+  const badgeEl = $("#topbarUserRoleBadge");
+  if (!currentUser) return;
+  const displayName = currentUser.nom || currentUser.name || "Utilisateur";
+  const displayRole = isAdmin() ? "Administrateur" : isStaff() ? "Pharmacien" : "Patient";
+  if (nameEl) nameEl.textContent = displayName;
+  if (roleTextEl) roleTextEl.textContent = displayRole;
+  if (badgeEl) {
+    badgeEl.textContent = displayRole;
+    badgeEl.className = `badge badge-role ${isAdmin() ? "badge-role-admin" : isStaff() ? "badge-role-pharmacien" : "badge-role-patient"}`;
   }
+}
+
+function applyRoleVisibility() {
+  currentRole = getDashboardRole();
+  updateRoleViews();
+  updateAdminControls();
   const welcome = $("#clientWelcome");
   if (welcome && currentUser) {
     welcome.textContent = `Welcome back, ${currentUser.nom}`;
   }
   const hint = $("#sidebarRoleHint");
   if (hint && currentUser) {
-    hint.textContent = `${currentUser.nom} (${currentUser.role})`;
+    const displayRole = isStaff() ? (isAdmin() ? "Administrateur" : "Pharmacien") : "Patient";
+    hint.textContent = `${currentUser.nom} (${displayRole})`;
   }
+  renderTopbarUserInfo();
 }
 
 async function refreshPatientData() {
@@ -131,8 +147,26 @@ async function refreshPharmacyData() {
   }
 }
 
+async function refreshAdminData() {
+  if (!isAdmin()) {
+    cachedUsers = [];
+    return;
+  }
+  showLoading(true);
+  try {
+    cachedUsers = await PharmaAPI.getAllUsers();
+  } catch (e) {
+    showToast(e.message);
+  } finally {
+    showLoading(false);
+  }
+}
+
 async function refreshData() {
-  if (currentRole === "owner" && isStaff()) {
+  if (isAdmin()) {
+    await refreshPharmacyData();
+    await refreshAdminData();
+  } else if (currentRole === "owner" && isStaff()) {
     await refreshPharmacyData();
   } else {
     await refreshPatientData();
@@ -272,6 +306,27 @@ function renderOrdersPanel() {
       )
       .join("");
   }
+}
+
+function renderUsersTable() {
+  const tbody = $("#usersTableBody");
+  if (!tbody) return;
+  tbody.innerHTML = cachedUsers
+    .map(
+      (user) => `
+      <tr>
+        <td class="fw-medium">${escapeHtml(user.nom || "-")}</td>
+        <td>${escapeHtml(user.email || "-")}</td>
+        <td>${escapeHtml(user.role || "-")}</td>
+        <td>${escapeHtml(user.telephone || "-")}</td>
+        <td>${escapeHtml(user.adresse || "-")}</td>
+        <td class="text-end">
+          <button type="button" class="btn btn-sm btn-outline-pharma me-2" data-action="edit-user" data-id="${user.id}">Modifier</button>
+          <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete-user" data-id="${user.id}">Supprimer</button>
+        </td>
+      </tr>`
+    )
+    .join("");
 }
 
 function updateStats() {
@@ -416,6 +471,7 @@ function showPanel(panel) {
     medicines: "#panel-medicines",
     prescriptions: "#panel-prescriptions",
     orders: "#panel-orders",
+    users: "#panel-users",
   };
   const el = $(map[panel]);
   if (el) el.classList.remove("d-none");
@@ -436,6 +492,7 @@ function showPanel(panel) {
   if (panel === "medicines") renderMedicinesTable();
   if (panel === "prescriptions") renderPrescriptionsTable();
   if (panel === "orders") renderOrdersPanel();
+  if (panel === "users") renderUsersTable();
 }
 
 function wireSidebar() {
@@ -462,15 +519,178 @@ function wireMobileSidebar() {
   $("#sidebarBackdrop")?.addEventListener("click", closeSidebarMobile);
 }
 
-function wireRoleSwitch() {
-  $("#btnRoleClient")?.addEventListener("click", () => setRole("client"));
-  $("#btnRoleOwner")?.addEventListener("click", () => setRole("owner"));
+function updateAdminControls() {
+  $all(".admin-only").forEach((el) => {
+    if (isAdmin()) {
+      el.classList.remove("d-none");
+    } else {
+      el.classList.add("d-none");
+    }
+  });
+}
+
+function clearManageUserForm() {
+  $("#manageUserError")?.classList.add("d-none");
+  $("#inputUserName").value = "";
+  $("#inputUserEmail").value = "";
+  $("#inputUserPassword").value = "";
+  const roleSelect = $("#selectUserRole");
+  if (roleSelect) {
+    roleSelect.value = "PATIENT";
+    roleSelect.disabled = false;
+  }
+  $("#inputUserTelephone").value = "";
+  $("#inputUserAdresse").value = "";
+  $("#inputUserDiplome").value = "";
+  $("#inputUserAccess").value = "1";
+  $("#modalManageUser").dataset.mode = "create";
+  $("#modalManageUser").dataset.userId = "";
+  updateManageUserFields();
+}
+
+function updateManageUserFields() {
+  const role = $("#selectUserRole")?.value;
+  const diplomeGroup = $("#userDiplomeGroup");
+  const accessGroup = $("#userAccessGroup");
+  if (diplomeGroup) {
+    diplomeGroup.classList.toggle("d-none", role !== "PHARMACIEN");
+  }
+  if (accessGroup) {
+    accessGroup.classList.toggle("d-none", role !== "ADMIN");
+  }
+}
+
+function fillManageUserForm(user) {
+  if (!user) return;
+  $("#inputUserName").value = user.nom || "";
+  $("#inputUserEmail").value = user.email || "";
+  $("#inputUserPassword").value = "";
+  const roleSelect = $("#selectUserRole");
+  if (roleSelect) {
+    roleSelect.value = user.role || "PATIENT";
+    roleSelect.disabled = true;
+  }
+  $("#inputUserTelephone").value = user.telephone || "";
+  $("#inputUserAdresse").value = user.adresse || "";
+  $("#inputUserDiplome").value = user.diplome || "";
+  $("#inputUserAccess").value = user.niveauAcces ? String(user.niveauAcces) : "1";
+  $("#modalManageUser").dataset.mode = "edit";
+  $("#modalManageUser").dataset.userId = String(user.id);
+  updateManageUserFields();
+}
+
+function showUserModalForEdit(userId) {
+  const user = cachedUsers.find((u) => u.id === Number(userId));
+  if (!user) return;
+  fillManageUserForm(user);
+  const modalLabel = $("#modalManageUserLabel");
+  if (modalLabel) modalLabel.textContent = `Modifier ${user.nom}`;
+  bootstrap.Modal.getOrCreateInstance($("#modalManageUser")).show();
+}
+
+function showUserModalForCreate() {
+  clearManageUserForm();
+  const modalLabel = $("#modalManageUserLabel");
+  if (modalLabel) modalLabel.textContent = "Ajouter utilisateur";
+  bootstrap.Modal.getOrCreateInstance($("#modalManageUser")).show();
+}
+
+async function saveManageUser() {
+  const mode = $("#modalManageUser").dataset.mode || "create";
+  const userId = Number($("#modalManageUser").dataset.userId || 0);
+  const payload = {
+    nom: $("#inputUserName").value.trim(),
+    email: $("#inputUserEmail").value.trim().toLowerCase(),
+    role: $("#selectUserRole").value,
+    password: $("#inputUserPassword").value,
+    telephone: $("#inputUserTelephone").value.trim(),
+    adresse: $("#inputUserAdresse").value.trim(),
+    diplome: $("#inputUserDiplome").value.trim(),
+    niveauAcces: Number($("#inputUserAccess").value) || 1,
+  };
+  if (!payload.nom || !payload.email || !payload.role) {
+    showManageUserError("Nom, email et role sont obligatoires.");
+    return;
+  }
+  if (mode === "create" && !payload.password) {
+    showManageUserError("Veuillez renseigner un mot de passe pour le nouvel utilisateur.");
+    return;
+  }
+  $("#manageUserError")?.classList.add("d-none");
+  showLoading(true);
+  try {
+    if (mode === "edit") {
+      await PharmaAPI.updateUser(userId, payload);
+      showToast("Utilisateur mis a jour.");
+    } else {
+      await PharmaAPI.createUser(payload);
+      showToast("Utilisateur ajoute.");
+    }
+    await refreshAdminData();
+    renderUsersTable();
+    bootstrap.Modal.getInstance($("#modalManageUser"))?.hide();
+  } catch (err) {
+    showManageUserError(err.message);
+  } finally {
+    showLoading(false);
+  }
+}
+
+function showManageUserError(message) {
+  const el = $("#manageUserError");
+  if (!el) return;
+  el.textContent = message;
+  el.classList.remove("d-none");
+}
+
+async function removeUser(userId) {
+  if (!confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
+    return;
+  }
+  showLoading(true);
+  try {
+    await PharmaAPI.deleteUser(userId);
+    showToast("Utilisateur supprime.");
+    await refreshAdminData();
+    renderUsersTable();
+  } catch (err) {
+    showToast(err.message);
+  } finally {
+    showLoading(false);
+  }
+}
+
+function wireUserManagement() {
+  $("#btnAddUser")?.addEventListener("click", () => {
+    clearManageUserForm();
+    const modalLabel = $("#modalManageUserLabel");
+    if (modalLabel) modalLabel.textContent = "Ajouter utilisateur";
+    updateManageUserFields();
+  });
+
+  $("#selectUserRole")?.addEventListener("change", updateManageUserFields);
+  $("#btnSaveUser")?.addEventListener("click", async () => await saveManageUser());
+
+  $("#usersTableBody")?.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+    const action = button.getAttribute("data-action");
+    const id = Number(button.getAttribute("data-id"));
+    if (action === "edit-user") {
+      showUserModalForEdit(id);
+    }
+    if (action === "delete-user") {
+      removeUser(id);
+    }
+  });
 }
 
 function wireLogout() {
   $("#btnLogout")?.addEventListener("click", () => {
+    sessionStorage.clear();
+    localStorage.clear();
     PharmaAPI.clearSession();
-    window.location.href = "index.html";
+    window.location.replace("index.html");
   });
 }
 
@@ -588,8 +808,8 @@ async function init() {
   applyRoleVisibility();
   wireSidebar();
   wireMobileSidebar();
-  wireRoleSwitch();
   wireLogout();
+  wireUserManagement();
   wireModals();
   updateRoleButtons();
   updateRoleViews();

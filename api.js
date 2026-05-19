@@ -19,6 +19,7 @@ const PharmaAPI = {
 
   clearSession() {
     sessionStorage.removeItem("pharmaUser");
+    localStorage.removeItem("pharmaUser");
   },
 
   authHeaders(extra = {}) {
@@ -129,6 +130,30 @@ const PharmaAPI = {
     return this.request(`/pharmacy/commande/${id}/status`, {
       method: "PUT",
       body: JSON.stringify({ status }),
+    });
+  },
+
+  async getAllUsers() {
+    return this.request("/admin/users");
+  },
+
+  async createUser(body) {
+    return this.request("/admin/users", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  },
+
+  async updateUser(id, body) {
+    return this.request(`/admin/users/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+  },
+
+  async deleteUser(id) {
+    return this.request(`/admin/users/${id}`, {
+      method: "DELETE",
     });
   },
 };

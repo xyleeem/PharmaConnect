@@ -4,6 +4,7 @@ tn\pharmaconnect\service\AuthService.class
 tn\pharmaconnect\repository\StockRepository.class
 tn\pharmaconnect\entity\Utilisateur.class
 tn\pharmaconnect\service\NotificationService.class
+tn\pharmaconnect\dto\UserDTO.class
 tn\pharmaconnect\entity\Administrateur.class
 tn\pharmaconnect\repository\MedicamentRepository.class
 tn\pharmaconnect\exception\GlobalExceptionHandler.class
@@ -32,12 +33,16 @@ tn\pharmaconnect\dto\DashboardStatsDTO.class
 tn\pharmaconnect\dto\NotificationDTO.class
 tn\pharmaconnect\service\StockService.class
 tn\pharmaconnect\dto\OrdonnanceRequest.class
+tn\pharmaconnect\dto\UserRequest.class
 tn\pharmaconnect\repository\PharmacienRepository.class
+tn\pharmaconnect\controller\AdminController.class
 tn\pharmaconnect\repository\CommandeRepository.class
 tn\pharmaconnect\exception\ApiException.class
+tn\pharmaconnect\service\UserService$1.class
 tn\pharmaconnect\dto\LoginRequest.class
 tn\pharmaconnect\dto\CommandeStatusRequest.class
 tn\pharmaconnect\dto\OrdonnanceResponse.class
+tn\pharmaconnect\service\UserService.class
 tn\pharmaconnect\entity\LignePrescription.class
 tn\pharmaconnect\service\MedicamentService.class
 tn\pharmaconnect\entity\Pharmacie.class

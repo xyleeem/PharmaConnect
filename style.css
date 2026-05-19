@@ -176,6 +176,35 @@ body {
   z-index: 1020;
 }
 
+.topbar-user {
+  min-width: 180px;
+}
+
+.badge-role {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: var(--pharma-primary);
+}
+
+.badge-role-patient {
+  background: #0f766e;
+}
+
+.badge-role-pharmacien {
+  background: #134e4a;
+}
+
+.badge-role-admin {
+  background: #7c3aed;
+}
+
 .role-switch-group {
   display: flex;
   flex-wrap: wrap;

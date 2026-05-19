@@ -1,3 +1,4 @@
+c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\dto\UserRequest.java
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\service\MedicamentService.java
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\entity\Administrateur.java
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\entity\Utilisateur.java
@@ -13,6 +14,7 @@ c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\config\Data
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\repository\PharmacieRepository.java
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\service\CommandeService.java
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\dto\OrdonnanceRequest.java
+c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\dto\UserDTO.java
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\repository\StockRepository.java
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\dto\LoginRequest.java
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\entity\Ordonnance.java
@@ -23,6 +25,8 @@ c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\repository\
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\repository\OrdonnanceRepository.java
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\repository\LignePrescriptionRepository.java
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\dto\CommandeDTO.java
+c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\service\UserService.java
+c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\controller\AdminController.java
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\repository\PharmacienRepository.java
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\dto\CommandeStatusRequest.java
 c:\xampp\htdocs\PharmaConnect\backend\src\main\java\tn\pharmaconnect\service\AuthService.java

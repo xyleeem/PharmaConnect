@@ -1,0 +1,4 @@
+1. Start XAMPP → Apache + MySQL
+2. Open terminal → cd c:\xampp\htdocs\PharmaConnect\backend
+3. Run: mvn spring-boot:run
+4. Open Incognito browser → http://localhost/PharmaConnect/
