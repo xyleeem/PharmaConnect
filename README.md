@@ -2,7 +2,7 @@
 
 **Pharmacy Management System** — Full-stack application with Spring Boot backend and modern frontend.
 
-## 📋 Overview
+## 📋 Overview:
 
 PharmaConnect is a complete pharmacy management platform that centralizes:
 - Inventory management
@@ -11,7 +11,7 @@ PharmaConnect is a complete pharmacy management platform that centralizes:
 - Patient follow-up
 - Role-based access control
 
-## 🏗️ Architecture
+## 🏗️ Architecture:
 
 | Layer | Technology |
 |-------|------------|
@@ -21,14 +21,14 @@ PharmaConnect is a complete pharmacy management platform that centralizes:
 | **Styling** | Bootstrap 5 + Custom CSS |
 | **ORM** | Hibernate / JPA |
 
-## 🔐 Key Concepts Demonstrated
+## 🔐 Key Concepts Demonstrated:
 
 - **Heritage (Inheritance)**: `Utilisateur` → `Patient`, `Pharmacien`, `Administrateur` using JOINED strategy
 - **REST API**: Complete CRUD endpoints
 - **JPA Mapping**: Entity relationships with foreign keys
 - **Session Management**: Secure authentication
 
-## 👥 User Roles
+## 👥 User Roles:
 
 | Role | Access |
 |------|--------|
@@ -36,7 +36,7 @@ PharmaConnect is a complete pharmacy management platform that centralizes:
 | **Pharmacien** | Manage stock, approve prescriptions, update orders |
 | **Administrateur** | Full system access |
 
-## 🚀 Installation & Run
+## 🚀 Installation & Run:
 
 ### Prerequisites
 - XAMPP (Apache + MySQL)
