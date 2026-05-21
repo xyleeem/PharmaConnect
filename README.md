@@ -82,6 +82,7 @@ PharmaConnect/
 ```
 ✨ Features
 Feature	Status
+```text
 User Authentication	✅
 Role-based Views	✅
 Medicine Catalog	✅
@@ -93,7 +94,7 @@ Notifications	✅
 Responsive Design	✅
 🎯 Validation Checklist
 Java Spring Boot backend
-
+```
 MySQL database integration
 
 JOINED inheritance (Utilisateur → Patient/Pharmacien)
