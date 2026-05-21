@@ -94,7 +94,7 @@ Notifications	✅
 Responsive Design	✅
 🎯 Validation Checklist
 Java Spring Boot backend
-```
+
 MySQL database integration
 
 JOINED inheritance (Utilisateur → Patient/Pharmacien)
@@ -104,3 +104,14 @@ REST API endpoints
 Session management
 
 Full CRUD operations
+```
+
+📌 Future Improvements
+```text
+  - Online payment integration
+  - Email notifications
+  - PDF prescription export
+  - Admin analytics dashboard
+  - JWT authentication
+  - Docker deployment
+```
