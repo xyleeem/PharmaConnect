@@ -64,7 +64,7 @@ Open Frontend :
 http://localhost/PharmaConnect/index.html
 
 📁 Project Structure
-text
+```text
 PharmaConnect/
 ├── backend/                 # Spring Boot application
 │   ├── src/main/java/       # Java source code
@@ -79,7 +79,7 @@ PharmaConnect/
 ├── api.js                   # API client
 ├── style.css                # Styles
 └── pharma_connect.sql       # Database schema
-
+```
 ✨ Features
 Feature	Status
 User Authentication	✅
