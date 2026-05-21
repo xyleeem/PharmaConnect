@@ -111,7 +111,4 @@ Full CRUD operations
 
   - Online payment integration
   - Email notifications
-  - PDF prescription export
-  - Admin analytics dashboard
   - JWT authentication
-  - Docker deployment
