@@ -92,6 +92,7 @@ Prescription Approval	✅
 Order Status Updates	✅
 Notifications	✅
 Responsive Design	✅
+```
 🎯 Validation Checklist
 Java Spring Boot backend
 
@@ -104,14 +105,13 @@ REST API endpoints
 Session management
 
 Full CRUD operations
-```
+
 
 📌 Future Improvements
-```text
+
   - Online payment integration
   - Email notifications
   - PDF prescription export
   - Admin analytics dashboard
   - JWT authentication
   - Docker deployment
-```
